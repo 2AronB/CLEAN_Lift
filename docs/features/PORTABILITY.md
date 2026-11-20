@@ -1,0 +1,32 @@
+# Local backup and restore
+
+## Change / 2026-10-15
+
+Status: implemented and automated verified on 2026-10-15; manual acceptance pending. User requested the four convenience suggestions and explicitly answered “Backup and restore.” This supersedes the export/import deferral for this specific local feature; Android automatic backup stays disabled.
+
+Scope: a readable, versioned UTF-8 JSON file containing all ten user/source tables, autoincrement sequences, local profile and saved Metrics/generator/calculator settings. Stable IDs, original timestamps, exact integer entered values, units, health inputs/results/formula versions, immutable attempts and foreign-key links are retained. Unsaved UI drafts, running timers and external audio files/URI access grants are not portable; audio must be reselected. No sharing, cloud integration, network, permissions, dependencies or services.
+
+Recovery policy: replacement of all records/settings, not a merge. The app validates size (8 MiB / 100,000 source rows), checksum, format/schema versions, exact tables/columns/types, supported enums, relational/uniqueness constraints and key data invariants in an isolated temporary Room database before preview or mutation. Currently only format 1/schema 8 is supported; unsupported versions are rejected rather than guessed. Preview shows file time/counts and current data counts. A separate confirmation requires typing RESTORE; current source data can be exported first. Invalid/truncated files leave current data/settings unchanged.
+
+Apply: transactionally replace all source rows and sequences and stage pending settings in a reserved app_metadata key. The same transaction records a fresh data-generation ID. Apply settings after the database commit; remove the pending marker only after every preference commit succeeds. Startup completes pending settings before any feature ViewModel starts. Interruption before the database commit rolls back everything; interruption afterward resumes settings idempotently. A failed settings commit keeps the app behind the recovery gate. Restart to fresh navigation after success; a generation-scoped saveable-state holder prevents stale editor state from attaching to restored records. Reserved recovery/generation metadata is not exported. No schema change is needed because app_metadata already stores private app key/value metadata.
+
+File handling: Android's system create/open document pickers, with instructions to choose On this device / Downloads for local storage. The app itself does not upload files. Files are unencrypted and include private health/profile data. Failed or cancelled exports are never reported as successful; a provider may leave an incomplete file after a failed write. File IO and validation run off the UI thread. No in-app delete-all control is enabled.
+
+Acceptance: export, change isolated test records/settings, restore and reopen with exact IDs/data/units/links/profile; reject corruption and unknown versions without mutations; simulate before/after-commit and partial-settings interruptions; preserve unrelated current records on failed transaction; no stale UI after restore. Manual picker/cancel/rotation/large-text/dark-mode/phone acceptance remains required.
+
+Ownership: data/BackupRepository.kt, data/BackupPreferences.kt, ui/BackupScreen.kt, ui/BackupViewModel.kt, MainActivity startup recovery gate. Automated evidence is recorded below and in CONTINUE.md.
+
+## Verification — 2026-10-15
+
+Final scripts/verify.ps1 -DatabaseTests passed: debug build, all 105 JVM tests, lint (0 errors/31 warnings), and all 50 isolated emulator database/restoration tests. Existing populated migration tests still cover schemas 1–7→8. No schema/dependency/permission/service/build changes. Merged manifest has no INTERNET permission and keeps allowBackup=false.
+BackupDataTest adds six substantive tests: all-table/sequence/profile/preference round-trip with reopening and exact linked snapshots; corrupt/truncated/unsupported/shape/type/overflow/link/duplicate-active-record rejection without mutations; precommit rollback; committed-data/pending-settings recovery after reopening; partial preference recovery; empty backups and bounded reads. DailyMeasurementDataTest adds two batch rollback/reopen tests. Tests use isolated databases and prefixed preference files, never workout-logger.db or the real profile. Actual file-picker UX, process/window restoration and phone behavior remain manual. Simulated interruption tests verify the durable state/replay logic; they do not claim an automated device power-loss test.
+
+## Manual acceptance — pending
+
+1. Android Studio > open this folder > View > Tool Windows > Device Manager > start the existing Medium Phone > select it in the top toolbar > Run. Use the desktop emulator first; do not clear storage or uninstall.
+2. Settings > Backup & restore > Save backup. In the system file picker open the top-left location menu, choose Downloads (or On this device), then Save. The app must report Backup saved only after writing finishes. Try cancellation too; it must report cancelled and preserve app data.
+3. Choose backup to restore, select that JSON file and inspect its time, profile and record counts. Back out without typing RESTORE: all current data/settings must remain. Try an unrelated text/JSON or damaged copy: validation must fail before any replacement.
+4. For a round trip, first save and validate a current backup. Then add one throwaway measurement in the emulator and change a profile setting. Choose the saved file again, verify its preview, type RESTORE and tap Replace data and restore. Replacement is deliberate: the throwaway entry and changes since the backup will be removed. Expect a fresh Workout screen, original profile/units/templates/history/measurements and exactly the original workout values/notes. Close/reopen to check durability. Reselect any shuttle recordings; audio files/permissions are not transferred.
+5. Rotate during file selection/preview; the selected validated file/preview and confirmation must remain or safely request reselection after process loss. No replacement happens without confirmation. Check large text, keyboard padding and dark mode. User report is required for manual/phone acceptance.
+
+Next action is this acceptance checklist or a reported bug. CSV/other formats, older/newer schema conversion, merging, automatic Android backup, encryption/password management, audio-file packaging and standalone delete-all are not implemented or silently authorized.

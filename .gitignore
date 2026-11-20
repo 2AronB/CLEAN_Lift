@@ -1,0 +1,19 @@
+.gradle/
+.kotlin/
+.idea/
+**/build/
+local.properties
+*.iml
+*.jks
+*.keystore
+# Local-only: snapshots, emulator logs, captures, secrets
+/tmp/
+*.log
+.DS_Store
+captures/
+*.hprof
+keystore.properties
+signing.properties
+
+# Personal cross-app backlog, kept off GitHub
+/Ideas.md
