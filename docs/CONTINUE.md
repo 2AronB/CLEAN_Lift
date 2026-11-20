@@ -26,7 +26,7 @@ The old Workout Logger stays installed with its data. Nothing moves until you re
 3. In CLEAN Lift: Settings (gear) > Backup & restore > choose the file > check the counts > type RESTORE.
 4. Compare a few workouts, plans and measurements against the old app.
 5. Only when satisfied, uninstall the old Workout Logger. That deletes its data, so the backup file is your fallback.
-6. Later, with Android Studio closed: move this folder to `CLEAN Development\CLEAN Lift`, then tell Claude to update paths (AGENTS.md links `..\CLEAN Development\DESIGN-PREFERENCES.md`).
+6. Done 2026-11-20: the project lives in `CLEAN Development\CLEAN Lift`. Open this folder in Android Studio; the old `Desktop\CLEAN Apps` folder is retired and safe to delete once Studio works here.
 
 On the emulator, Run likewise installs CLEAN Lift next to the old app; the same backup/restore applies. Do not uninstall or wipe anything as a shortcut.
 

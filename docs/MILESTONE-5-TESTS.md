@@ -4,7 +4,7 @@ Accepted: the user reported that all manual checks 1–9 passed. Continue with M
 
 ## Install this update
 
-1. Open `%USERPROFILE%\Desktop\CLEAN Apps` in Android Studio.
+1. Open `%USERPROFILE%\Desktop\CLEAN Development\CLEAN Lift` in Android Studio.
 2. Select `app` and your existing Medium Phone emulator in the top toolbar.
 3. Choose **Run > Run app**, or press **Shift+F10**, even if the previous app version is already open. Wait for installation to finish.
 

@@ -30,7 +30,7 @@ Initial tool and library downloads need a connection; the app runs offline.
 
 ## Open and build
 
-1. On the welcome screen, click Open. Select `%USERPROFILE%\Desktop\CLEAN Apps`, then OK. Review the project and choose Trust Project if prompted.
+1. On the welcome screen, click Open. Select `%USERPROFILE%\Desktop\CLEAN Development\CLEAN Lift`, then OK. Review the project and choose Trust Project if prompted.
 2. Wait for Gradle sync and dependency downloads. If offered missing SDK components, install them and review any licenses.
 3. If Java compatibility fails, open File > Settings > Build, Execution, Deployment > Build Tools > Gradle. Set Gradle JDK to the bundled jbr / Embedded JDK, then OK. Click File > Sync Project with Gradle Files.
 4. Open View > Tool Windows > Terminal. In PowerShell, run:
